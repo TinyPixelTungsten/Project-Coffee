@@ -1,0 +1,76 @@
+-- title:   game title
+-- author:  game developer, email, etc.
+-- desc:    short description
+-- site:    website link
+-- license: MIT License (change this to your license of choice)
+-- version: 0.1
+-- script:  lua
+
+---------------------------------------
+--GLOBAL SETTINGS AND CONSTANTS
+---------------------------------------
+WIDTH=240
+HEIGHT=136
+BASE_SPEED=2
+
+---------------------------------------
+--OBJECTS / DATA
+---------------------------------------
+plr={
+ x=112,
+ y=60
+}
+
+---------------------------------------
+--MAIN LOOP
+---------------------------------------
+function TIC()
+ --logic update
+ plr_movement()
+  
+ --graphics rendering
+ cls(0)
+ draw_interface()
+ spr(1,plr.x,plr.y,0,1,0,0,2,2)
+end
+
+---------------------------------------
+--STATE MACHINE
+---------------------------------------
+
+---------------------------------------
+--FUNCTIONS
+---------------------------------------
+function plr_movement()
+ local dx=0
+ local dy=0
+ 
+  if btn(3) or key(4)  then dx=dx+1 end
+  if btn(2) or key(1)  then dx=dx-1 end
+  if btn(1) or key(19) then dy=dy+1 end
+  if btn(0) or key(23) then dy=dy-1 end
+
+ if dx~=0 or dy~=0 then
+  local length=math.sqrt(dx*dx+dy*dy)
+  
+  plr.x=plr.x+(dx/length)*BASE_SPEED
+  plr.y=plr.y+(dy/length)*BASE_SPEED
+ end
+
+ --screen edges
+ if plr.x<52 then plr.x=52 end
+ if plr.x>WIDTH-68 then plr.x=WIDTH-68 end
+ if plr.y<0 then plr.y=0 end
+ if plr.y>HEIGHT-16 then plr.y=HEIGHT-16 end
+end
+
+function draw_interface()
+ rect(0,0,52,136,15)
+ rect(188,0,52,136,15)
+
+ print("HELLO WORLD!",84,84,6)
+end
+
+function plr_bullet()
+
+end
