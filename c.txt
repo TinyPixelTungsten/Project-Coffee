@@ -20,17 +20,22 @@ plr={
  x=112,
  y=60
 }
-
+bul={
+ x=112,
+ y=40
+}
 ---------------------------------------
 --MAIN LOOP
 ---------------------------------------
 function TIC()
  --logic update
  plr_movement()
+ plr_bullet()
   
  --graphics rendering
  cls(0)
- draw_interface()
+ draw_interface() 
+ spr(96,bul.x,bul.y,0,1,0,0,1,1)
  spr(1,plr.x,plr.y,0,1,0,0,2,2)
 end
 
@@ -72,5 +77,6 @@ function draw_interface()
 end
 
 function plr_bullet()
-
+ bul.y=bul.y-2
+ if btnp(4) or keyp(10) then bul.y=plr.y bul.x=plr.x+5 end
 end
