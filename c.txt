@@ -18,11 +18,12 @@ BASE_SPEED=2
 ---------------------------------------
 plr={
  x=112,
- y=60
+ y=60,
+ sprite=1
 }
 bul={
  x=112,
- y=40
+ y=-10
 }
 ---------------------------------------
 --MAIN LOOP
@@ -35,8 +36,8 @@ function TIC()
  --graphics rendering
  cls(0)
  draw_interface() 
- spr(96,bul.x,bul.y,0,1,0,0,1,1)
- spr(1,plr.x,plr.y,0,1,0,0,2,2)
+ spr(7,bul.x,bul.y,0,1,0,0,1,2)
+ spr(plr.sprite,plr.x,plr.y,0,1,0,0,2,2)
 end
 
 ---------------------------------------
@@ -50,10 +51,12 @@ function plr_movement()
  local dx=0
  local dy=0
  
-  if btn(3) or key(4)  then dx=dx+1 end
-  if btn(2) or key(1)  then dx=dx-1 end
-  if btn(1) or key(19) then dy=dy+1 end
-  if btn(0) or key(23) then dy=dy-1 end
+ if btn(3) or key(4)  then dx=dx+1 plr.sprite=5 end
+ if btn(2) or key(1)  then dx=dx-1 plr.sprite=3 end
+ if btn(1) or key(19) then dy=dy+1 end
+ if btn(0) or key(23) then dy=dy-1 end
+  
+ if dx==0 then plr.sprite=1 end
 
  if dx~=0 or dy~=0 then
   local length=math.sqrt(dx*dx+dy*dy)
@@ -77,6 +80,8 @@ function draw_interface()
 end
 
 function plr_bullet()
- bul.y=bul.y-2
- if btnp(4) or keyp(10) then bul.y=plr.y bul.x=plr.x+5 end
+ bul.y=bul.y-6
+ if btnp(4) or keyp(10) then bul.y=plr.y bul.x=plr.x+5 
+ sfx(00)
+ end
 end
