@@ -18,8 +18,9 @@ BASE_SPEED=2
 ---------------------------------------
 plr={
  x=112,
- y=60,
- sprite=1
+ y=80,
+ sprite=1,
+ flame=128
 }
 bul={
  x=112,
@@ -32,12 +33,15 @@ function TIC()
  --logic update
  plr_movement()
  plr_bullet()
+ plr_flame()
   
  --graphics rendering
  cls(0)
- draw_interface() 
  spr(7,bul.x,bul.y,0,1,0,0,1,2)
  spr(plr.sprite,plr.x,plr.y,0,1,0,0,2,2)
+ spr(plr.flame,plr.x-1,plr.y+16,0,1,0,0,1,1)
+ spr(plr.flame,plr.x+9,plr.y+16,0,1,0,0,1,1)
+ draw_interface()
 end
 
 ---------------------------------------
@@ -66,8 +70,8 @@ function plr_movement()
  end
 
  --screen edges
- if plr.x<52 then plr.x=52 end
- if plr.x>WIDTH-68 then plr.x=WIDTH-68 end
+ if plr.x<48 then plr.x=48 end
+ if plr.x>WIDTH-64 then plr.x=WIDTH-64 end
  if plr.y<0 then plr.y=0 end
  if plr.y>HEIGHT-16 then plr.y=HEIGHT-16 end
 end
@@ -85,3 +89,13 @@ function plr_bullet()
  sfx(00)
  end
 end
+
+function plr_flame()
+ plr.flame=plr.flame+0.75
+ if plr.flame>134 then plr.flame=128 end
+end
+
+function plr_muzzle()
+
+end
+
