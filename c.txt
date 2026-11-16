@@ -20,28 +20,43 @@ plr={
  x=112,
  y=80,
  sprite=1,
- flame=128
+ flame=128,
+ muzzle=0,
+ lives=3,
+ sugar=0
 }
 bul={
  x=112,
- y=-10
+ y=-10,
+ sprite=7
 }
+score=0
+starfield={}
+
 ---------------------------------------
 --MAIN LOOP
 ---------------------------------------
 function TIC()
  --logic update
+ update_starfield()
  plr_movement()
  plr_bullet()
  plr_flame()
+ plr_muzzle()
   
  --graphics rendering
  cls(0)
- spr(7,bul.x,bul.y,0,1,0,0,1,2)
+ draw_starfield()
+ spr(bul.sprite,bul.x,bul.y,0,1,0,0,1,2)
  spr(plr.sprite,plr.x,plr.y,0,1,0,0,2,2)
  spr(plr.flame,plr.x-1,plr.y+16,0,1,0,0,1,1)
  spr(plr.flame,plr.x+9,plr.y+16,0,1,0,0,1,1)
+ if plr.muzzle>0 then
+  circ(plr.x+8,plr.y-1,plr.muzzle,12)
+ end
  draw_interface()
+ print("SCORE: "..score,1,3,12,false,1,true)
+ plr_health()
 end
 
 ---------------------------------------
@@ -85,8 +100,9 @@ end
 
 function plr_bullet()
  bul.y=bul.y-6
- if btnp(4) or keyp(10) then bul.y=plr.y bul.x=plr.x+5 
- sfx(00)
+ bul.sprite=bul.sprite+0.5
+ if bul.sprite>=10 then bul.sprite=7 end
+ if btnp(4) or keyp(10) then bul.y=plr.y bul.x=plr.x+5 bul.sprite=7 sfx(00)
  end
 end
 
@@ -96,6 +112,39 @@ function plr_flame()
 end
 
 function plr_muzzle()
-
+ if btnp(4) or keyp(10) then plr.muzzle=8 end
+ if plr.muzzle>0 then plr.muzzle=plr.muzzle-1 end
 end
 
+function plr_health()
+ for i=1,3 do
+  if plr.lives>=i then
+   spr(98,i*18-18,11,0,2,0,0,1,1)
+   else spr(99,i*18-18,11,0,2,0,0,1,1)
+  end
+ end
+end
+
+function update_starfield()
+ if math.random()<0.08 then table.insert(starfield,{
+ x=math.random(49,184),
+ y=-24,
+ spd=10,
+ sprite=144
+ })
+end
+
+for i=#starfield,1,-1 do
+ local l=starfield[i]
+ l.y=l.y+l.spd
+ if l.y>HEIGHT then
+  table.remove(starfield,i)
+  end
+ end
+end
+
+function draw_starfield()
+ for _,l in ipairs(starfield) do
+  spr(l.sprite,l.x,l.y,0,1,0,0,1,3)
+ end
+end
