@@ -16,6 +16,9 @@ BASE_SPEED=2
 ---------------------------------------
 --OBJECTS / DATA
 ---------------------------------------
+Mode="Menu"
+blinkt=0
+
 plr={
  x=112,
  y=80,
@@ -37,15 +40,49 @@ starfield={}
 --MAIN LOOP
 ---------------------------------------
 function TIC()
+ cls(0)
+ 
+ --states
+ if Mode=="Menu" then state_menu()
+ elseif Mode=="Game" then state_game()
+ end
+end
+
+---------------------------------------
+--STATE MACHINE
+---------------------------------------
+function init_game()
+ plr.x=112
+ plr.y=80
+ plr.lives=3
+ plr.sugar=0
+ plr.muzzle=0
+ bul.y=-10
+ score=0
+end
+
+function state_menu()
+ update_starfield()
+ draw_starfield()
+ 
+ print("SHMUP C.O.F.F.E.E.",75,40,blink(),false,2)
+ print("PRESS J TO START",58,85,15)
+ 
+ if btnp(4) or keyp(10) then
+  init_game()
+  Mode="Game"
+ end
+end
+
+function state_game()
  --logic update
  update_starfield()
  plr_movement()
  plr_bullet()
  plr_flame()
  plr_muzzle()
-  
+ 
  --graphics rendering
- cls(0)
  draw_starfield()
  spr(bul.sprite,bul.x,bul.y,0,1,0,0,1,2)
  spr(plr.sprite,plr.x,plr.y,0,1,0,0,2,2)
@@ -58,10 +95,6 @@ function TIC()
  print("SCORE: "..score,1,3,12,false,1,true)
  plr_health()
 end
-
----------------------------------------
---STATE MACHINE
----------------------------------------
 
 ---------------------------------------
 --FUNCTIONS
@@ -95,14 +128,16 @@ function draw_interface()
  rect(0,0,52,136,15)
  rect(188,0,52,136,15)
 
- print("HELLO WORLD!",84,84,6)
+ --print("HELLO WORLD!",84,84,6)
 end
 
 function plr_bullet()
  bul.y=bul.y-6
  bul.sprite=bul.sprite+0.5
  if bul.sprite>=10 then bul.sprite=7 end
- if btnp(4) or keyp(10) then bul.y=plr.y bul.x=plr.x+5 bul.sprite=7 sfx(00)
+ if btnp(4) or keyp(10) then bul.y=plr.y bul.x=plr.x+5
+ bul.sprite=7
+ sfx(00)
  end
 end
 
@@ -126,19 +161,20 @@ function plr_health()
 end
 
 function update_starfield()
- if math.random()<0.08 then table.insert(starfield,{
- x=math.random(49,184),
- y=-24,
- spd=10,
- sprite=144
- })
-end
+ if math.random()<0.08 then
+  table.insert(starfield,{
+   x=math.random(49,184),
+   y=-24,
+   spd=10,
+   sprite=144
+  })
+ end
 
-for i=#starfield,1,-1 do
- local l=starfield[i]
- l.y=l.y+l.spd
- if l.y>HEIGHT then
-  table.remove(starfield,i)
+ for i=#starfield,1,-1 do
+  local l=starfield[i]
+  l.y=l.y+l.spd
+  if l.y>HEIGHT then
+   table.remove(starfield,i)
   end
  end
 end
@@ -147,4 +183,8 @@ function draw_starfield()
  for _,l in ipairs(starfield) do
   spr(l.sprite,l.x,l.y,0,1,0,0,1,3)
  end
+end
+
+function blink()
+ return 12
 end
